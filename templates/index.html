@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Generator</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+  body {
+    background: linear-gradient(to bottom, #0f0f1e, #1a1a3b); /* Darker shades with a blue tint */
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .navbar {
+    background-color: #1c1c4d; /* Deep blue */
+  }
+
+  .navbar-brand {
+    color: #ff6f61 !important; /* Vibrant coral */
+    font-weight: bold;
+  }
+
+  .btn-generate {
+    background-color: #ff6f61; /* Vibrant coral */
+    color: #1a1a3b; /* Contrast with button */
+  }
+
+  .btn-generate:hover {
+    background-color: #e85e52; /* Slightly darker coral */
+  }
+
+  .form-control {
+    background-color: #242448; /* Deep violet shade */
+    color: #ffffff;
+  }
+
+  .form-control:focus {
+    border-color: #ff6f61;
+    box-shadow: 0 0 5px rgba(255, 111, 97, 0.5); /* Coral glow */
+  }
+
+  .section-title {
+    color: #ff9f43; /* Bright orange accent */
+    margin-top: 20px;
+    text-decoration: underline;
+  }
+
+  .output-container {
+    background-color: #1e1e3c; /* Slightly lighter violet */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 111, 97, 0.3); /* Coral glow for the box */
+  }
+
+  .output-container img {
+    max-width: 100%;
+    border: 2px solid #ff6f61;
+    border-radius: 8px;
+  }
+
+    </style>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">AvatarAI</a>
+    </div>
+</nav>
+<div class="container my-5">
+    <div class="text-center"><img src="{{ url_for('static', filename='images/icon.png') }}" alt="App Icon" width="200"></div>
+    <form id="avatarForm" class="mb-5">
+        <!-- Demographics -->
+        <h3 class="section-title">Demographics</h3>
+        <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select class="form-select form-control" id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="age" class="form-label">Age</label>
+            <select class="form-select form-control" id="age">
+                <option value="child">Child</option>
+                <option value="teen">Teen</option>
+                <option value="adult">Adult</option>
+                <option value="elderly">Elderly</option>
+            </select>
+        </div>
+
+        <!-- Physical Characteristics -->
+        <h3 class="section-title">Physical Characteristics</h3>
+        <div class="mb-3">
+            <label for="skinTone" class="form-label">Skin Tone</label>
+            <input type="text" class="form-control" id="skinTone" placeholder="E.g., medium tan">
+        </div>
+        <div class="mb-3">
+            <label for="faceShape" class="form-label">Face Shape</label>
+            <input type="text" class="form-control" id="faceShape" placeholder="E.g., oval">
+        </div>
+        <div class="mb-3">
+            <label for="eyeDetails" class="form-label">Eye Accessories</label>
+            <input type="text" class="form-control" id="eyeDetails" placeholder="E.g., glowing neon glasses">
+        </div>
+        <div class="mb-3">
+            <label for="hairDetails" class="form-label">Hair Details</label>
+            <input type="text" class="form-control" id="hairDetails" placeholder="E.g., short, wavy, jet black">
+        </div>
+
+        <!-- Accessories and Clothing -->
+        <h3 class="section-title">Accessories and Clothing</h3>
+        <div class="mb-3">
+            <label for="clothingType" class="form-label">Clothing Type</label>
+            <input type="text" class="form-control" id="clothingType" placeholder="E.g., metallic jacket">
+        </div>
+        <div class="mb-3">
+            <label for="clothingColor" class="form-label">Clothing Color</label>
+            <input type="text" class="form-control" id="clothingColor" placeholder="E.g., metallic tones">
+        </div>
+
+        <!-- Environment and Background -->
+        <h3 class="section-title">Environment and Background</h3>
+        <div class="mb-3">
+            <label for="theme" class="form-label">Theme</label>
+            <input type="text" class="form-control" id="theme" placeholder="E.g., futuristic city skyline">
+        </div>
+        <div class="mb-3">
+            <label for="backgroundDetails" class="form-label">Background Details</label>
+            <input type="text" class="form-control" id="backgroundDetails"
+                   placeholder="E.g., neon lights illuminating the skyline">
+        </div>
+
+        <!-- Customization -->
+        <h3 class="section-title">Customization</h3>
+        <div class="mb-3">
+            <label for="specialEffects" class="form-label">Special Effects</label>
+            <input type="text" class="form-control" id="specialEffects" placeholder="E.g., glow and neon highlights">
+        </div>
+
+        <!-- Personalization -->
+        <h3 class="section-title">Personalization</h3>
+        <div class="mb-3">
+            <label for="interestsTheme" class="form-label">Interests/Theme</label>
+            <input type="text" class="form-control" id="interestsTheme" placeholder="E.g., tech-savvy individual">
+        </div>
+
+        <button type="button" class="btn btn-generate w-100 mt-3" id="generateBtn">Generate Avatar</button>
+    </form>
+
+    <div  style="display: none;" id="wait">Crafting your timeless masterpiece! Just a moment as we weave creativity into perfection...</div>
+    <div class="output-container text-center hidden" id="outputContainer"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#generateBtn').on('click', function () {
+      $("#wait").show()
+      $("#outputContainer").html("")
+      // Collect form data
+      const formData = {
+        demographics: {
+          gender: $('#gender').val(),
+          age: $('#age').val()
+        },
+        physicalCharacteristics: {
+          skinTone: $('#skinTone').val(),
+          faceShape: $('#faceShape').val(),
+          eyes: { accessories: $('#eyeDetails').val() },
+          hairDetails: $('#hairDetails').val()
+        },
+        accessoriesAndClothing: {
+          clothingType: $('#clothingType').val(),
+          clothingColor: $('#clothingColor').val()
+        },
+        environmentAndBackground: {
+          theme: $('#theme').val(),
+          backgroundDetails: $('#backgroundDetails').val()
+        },
+        customization: {
+          specialEffects: $('#specialEffects').val()
+        },
+        personalization: {
+          interestsTheme: $('#interestsTheme').val()
+        }
+      };
+
+      // Send form data to the Flask backend
+      $.ajax({
+        url: '/generate',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function (response) {
+          // Update the output container with the generated avatar
+          $('#outputContainer').html(`
+            <img src="${response.image_url}" alt="Generated Avatar">
+          `);
+          $("#wait").hide()
+        },
+        error: function (error) {
+          console.error("Error generating avatar:", error);
+          $('#outputContainer').html('<p>Error generating avatar. Please try again.</p>');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
